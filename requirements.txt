@@ -1,0 +1,4 @@
+Django>=1.5.1
+django-livinglots-generictags==1.0
+git+git://github.com/596acres/django-livinglots-mailsender/@3f28193dd
+git+git://github.com/596acres/django-livinglots-notify/@ca24dd421
