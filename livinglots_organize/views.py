@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.views.generic.base import ContextMixin
 from django.views.generic.edit import DeleteView
 
-from .models import get_organizer_model, get_watcher_model
+from livinglots import get_organizer_model
 
 
 class EditParticipantMixin(ContextMixin):
@@ -18,9 +18,6 @@ class EditParticipantMixin(ContextMixin):
         context.update({
             'organizers': get_organizer_model().objects.filter(email_hash__istartswith=hash).order_by('added'),
         })
-        watcher_model = get_watcher_model()
-        if watcher_model:
-            context['watchers'] = watcher_model.objects.filter(email_hash__istartswith=hash).order_by('added')
         return context
 
     def get_participant_hash(self):
@@ -47,14 +44,8 @@ class DeleteParticipantView(DeleteView):
         verb = 'working on'
         if isinstance(self.object, get_organizer_model()):
             verb = 'subscribed to'
-        elif isinstance(self.object, get_watcher_model()):
-            verb = 'watching'
         return 'You are no longer %s %s.' % (verb, self.object.content_object)
 
 
 class DeleteOrganizerView(DeleteParticipantView):
     model = get_organizer_model()
-
-
-class DeleteWatcherView(DeleteParticipantView):
-    model = get_watcher_model()

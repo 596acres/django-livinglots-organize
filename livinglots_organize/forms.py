@@ -1,9 +1,9 @@
 from django.forms import HiddenInput, ModelForm
 
+from livinglots import get_organizer_model
 from livinglots_notify.forms import NotifyOnCreationForm
 
 from .notifications import notify_participants_new_obj
-from .models import get_organizer_model, get_watcher_model
 from .widgets import PrefixLabelTextInput
 
 
@@ -35,16 +35,5 @@ class OrganizerForm(NotifyParticipantsOnCreationForm):
             'added_by': HiddenInput(),
             'content_type': HiddenInput(),
             'facebook_page': PrefixLabelTextInput('facebook.com/'),
-            'object_id': HiddenInput(),
-        }
-
-
-class WatcherForm(ParticipantForm):
-
-    class Meta:
-        model = get_watcher_model()
-        widgets = {
-            'added_by': HiddenInput(),
-            'content_type': HiddenInput(),
             'object_id': HiddenInput(),
         }

@@ -6,8 +6,6 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models
-from django.core.exceptions import ImproperlyConfigured
-from django.db.models import get_model
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -114,25 +112,6 @@ class OrganizerType(models.Model):
 
     def __unicode__(self):
         return self.name
-
-
-def get_organizer_model():
-    try:
-        organizer_model = settings.ORGANIZE['ORGANIZER_MODEL']
-        return get_model(*organizer_model.split('.'))
-    except Exception:
-        raise ImproperlyConfigured('Could not find a organizer model. Did you '
-                                   'set ORGANIZE.ORGANIZER_MODEL in your '
-                                   'settings.py?')
-
-def get_watcher_model():
-    try:
-        watcher_model = settings.ORGANIZE['WATCHER_MODEL']
-        return get_model(*watcher_model.split('.'))
-    except Exception:
-        logging.info('No watcher model found. Set ORGANIZE.WATCHER_MODEL if '
-                     'you have one.')
-        return None
 
 
 def get_participant_models():

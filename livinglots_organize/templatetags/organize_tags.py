@@ -4,11 +4,10 @@ Template tags for the organize app, loosely based on django.contrib.comments.
 """
 from django import template
 
+from livinglots import get_organizer_model
 from livinglots_generictags.tags import (GetGenericRelationList,
                                          RenderGenericRelationList,
                                          GetGenericRelationCount)
-
-from ..models import get_organizer_model, get_watcher_model
 
 register = template.Library()
 
@@ -29,9 +28,3 @@ class GetOrganizerCount(GetGenericRelationCount):
     model = get_organizer_model()
 
 register.tag(GetOrganizerCount)
-
-
-class GetWatcherCount(GetGenericRelationCount):
-    model = get_watcher_model()
-
-register.tag(GetWatcherCount)
