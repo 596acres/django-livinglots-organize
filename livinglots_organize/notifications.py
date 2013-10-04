@@ -23,7 +23,7 @@ def notify_participant_type_new_obj(participant_class, obj):
     except Exception:
         kwargs['excluded_emails'] = []
 
-    template = 'organize/notifications/%ss/new_%s.txt' % (
+    template = 'livinglots/organize/notifications/%ss/new_%s.txt' % (
         participant_class.__name__.lower(),
         obj._meta.object_name.lower()
     )

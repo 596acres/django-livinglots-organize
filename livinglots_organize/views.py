@@ -87,16 +87,13 @@ class ParticipantMixin(object):
 class AddParticipantView(AddGenericMixin, ParticipantMixin, CreateView):
 
     def get_success_url(self):
-        try:
-            kwargs = {
-                'object_pk': self.object.object_id,
-                'hash': self.object.email_hash[:30],
-                'pk': self.object.pk,
-            }
-            urlname = 'organize:add_%s_success' % self._get_participant_type()
-            return reverse(urlname, kwargs=kwargs)
-        except Exception:
-            raise Http404
+        kwargs = {
+            'object_pk': self.object.pk,
+            'hash': self.object.email_hash[:30],
+            'pk': self.object.object_id,
+        }
+        urlname = 'organize:add_%s_success' % self._get_participant_type()
+        return reverse(urlname, kwargs=kwargs)
 
     def get_template_names(self):
         return [
