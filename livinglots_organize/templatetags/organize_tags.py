@@ -14,6 +14,7 @@ register = template.Library()
 
 class RenderOrganizerList(RenderGenericRelationList):
     model = get_organizer_model()
+    template_dir_prefix = 'livinglots'
 
 register.tag(RenderOrganizerList)
 
