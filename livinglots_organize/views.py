@@ -102,14 +102,14 @@ class AddParticipantView(AddGenericMixin, ParticipantMixin, CreateView):
 
 
 class AddParticipantSuccessView(ParticipantMixin, TemplateView):
-    model = None
+    model = get_organizer_model()
 
     def get_context_data(self, **kwargs):
         context = super(AddParticipantSuccessView, self).get_context_data(**kwargs)
         try:
             context['participant'] = self.model.objects.filter(
                 email_hash__istartswith=kwargs['hash'],
-                pk=self.kwargs['pk'],
+                pk=self.kwargs['object_pk'],
             )[0]
         except Exception:
             raise Http404
