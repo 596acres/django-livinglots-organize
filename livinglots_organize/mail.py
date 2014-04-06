@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
+from django.template.base import TemplateDoesNotExist
 from django.template.loader import render_to_string
 
 from livinglots_mailsender.helpers import (mail_multiple_personalized,
@@ -48,19 +49,23 @@ def mass_mail_organizers(subject, message, organizers, **kwargs):
 
 
 def mail_target_participants(participant_cls, target, subject,
-                             excluded_emails=[], template=None, **kwargs):
+                             excluded_emails=[], template=None,
+                             fail_silently_no_template=True, **kwargs):
     """Send a message to participants of a given target."""
     participants = participant_cls.objects.filter(
         content_type=ContentType.objects.get_for_model(target),
         object_id=target.pk,
     )
     participants = [p for p in participants if p.email not in excluded_emails]
-    messages = _get_messages(participants, template, **kwargs)
+    messages = _get_messages(participants, template,
+                             fail_silently_no_template=fail_silently_no_template,
+                             **kwargs)
     mail_multiple_personalized(subject, messages,
                                from_email=get_target_email_address(target))
 
 
-def _get_messages(participants, template_name, **kwargs):
+def _get_messages(participants, template_name, fail_silently_no_template=False,
+                  **kwargs):
     messages = {}
     for p in participants:
         context = kwargs
@@ -70,5 +75,11 @@ def _get_messages(participants, template_name, **kwargs):
             'target': p.content_object,
             'participant': p,
         })
-        messages[p.email] = render_to_string(template_name, context)
+        try:
+            messages[p.email] = render_to_string(template_name, context)
+        except TemplateDoesNotExist:
+            if fail_silently_no_template:
+                continue
+            else:
+                raise
     return messages
