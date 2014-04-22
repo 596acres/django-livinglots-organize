@@ -41,6 +41,9 @@ class Participant(models.Model):
                                    self.email).hexdigest()
         super(Participant, self).save(*args, **kwargs)
 
+    def get_edit_url(self):
+        raise NotImplementedError('Implement Participant.get_edit_url()')
+
 
 class BaseOrganizer(Participant):
     """
