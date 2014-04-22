@@ -18,7 +18,8 @@ urlpatterns = patterns('',
         EditLotParicipantView.as_view(),
         name='edit_participant'),
 
-    url(r'^organizers/delete/(?P<pk>\d+)/$', DeleteOrganizerView.as_view(),
+    url(r'^organizers/(?P<hash>[^/]{30,})/delete/(?P<organizer_pk>\d+)/$',
+        DeleteOrganizerView.as_view(),
         name='delete_organizer'),
 
 )

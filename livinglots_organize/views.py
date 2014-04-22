@@ -53,6 +53,8 @@ class DeleteParticipantView(DeleteView):
 
 class DeleteOrganizerView(DeleteParticipantView):
     model = get_organizer_model()
+    pk_url_kwarg = 'organizer_pk'
+    template_name = 'livinglots/organize/organizer_confirm_delete.html'
 
 
 class EditLotParicipantView(EditParticipantMixin, TemplateView):
