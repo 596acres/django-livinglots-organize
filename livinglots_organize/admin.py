@@ -1,6 +1,28 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from .models import OrganizerType
+
+
+class BaseOrganizerAdmin(admin.ModelAdmin):
+    exclude = ('content_type', 'object_id',)
+    list_display = ('name', 'email', 'type', 'post_publicly', 'added',
+                    'linked_target',)
+    list_filter = ('added', 'post_publicly',)
+    readonly_fields = ('added', 'linked_target',)
+    search_fields = ('name', 'email', 'phone', 'notes', 'url',)
+
+    def linked_target(self, organizer):
+        if not organizer.content_object:
+            return None
+        return mark_safe(
+            '<a href="%s">%s</a>' % (
+                organizer.content_object.get_absolute_url(),
+                str(organizer.content_object),
+            )
+        )
+
+    linked_target.short_description = 'target'
 
 
 class OrganizerTypeAdmin(admin.ModelAdmin):
