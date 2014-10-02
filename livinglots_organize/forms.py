@@ -30,6 +30,7 @@ class NotifyParticipantsOnCreationForm(NotifyOnCreationForm):
 class OrganizerForm(NotifyParticipantsOnCreationForm):
 
     class Meta:
+        exclude = ('added',)
         model = get_organizer_model()
         widgets = {
             'added_by': HiddenInput(),
