@@ -10,10 +10,11 @@ from livinglots_mailsender.helpers import (mail_multiple_personalized,
 
 def mass_mailing(subject, message, objects, template_name, **kwargs):
     messages = {}
+    site = Site.objects.get_current()
     for obj in objects:
         # message gets sent once to each unique email address, thanks to dict
         messages[obj.email] = render_to_string(template_name, {
-            'site': Site.objects.get_current(),
+            'site': site,
             'target': obj.content_object,
             'message': message,
             'obj': obj,
@@ -30,7 +31,7 @@ def mass_mail_watchers(subject, message, watchers, **kwargs):
         subject,
         message,
         watchers,
-        'organize/notifications/mass_watcher_text.txt',
+        'livinglots/organize/notifications/mass_watcher_text.txt',
         **kwargs
     )
 
@@ -43,7 +44,7 @@ def mass_mail_organizers(subject, message, organizers, **kwargs):
         subject,
         message,
         organizers,
-        'organize/notifications/mass_organizer_text.txt',
+        'livinglots/organize/notifications/mass_organizer_text.txt',
         **kwargs
     )
 
