@@ -30,7 +30,7 @@ setup(
     platforms=['OS Independent'],
     classifiers=CLASSIFIERS,
     install_requires=[
-        'Django>=1.5.1',
+        'Django>=1.7',
     ],
     packages=find_packages(),
     include_package_data=True,

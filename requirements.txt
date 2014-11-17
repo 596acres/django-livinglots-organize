@@ -1,4 +1,4 @@
-Django>=1.5.1
+Django>=1.7
 git+git://github.com/596acres/django-livinglots/@530993b93
 django-livinglots-generictags==1.0
 git+git://github.com/596acres/django-livinglots-mailsender/@3f28193dd
