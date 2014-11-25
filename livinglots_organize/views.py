@@ -4,14 +4,22 @@ Generic views for editing participants.
 """
 
 from django.contrib import messages
+from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
+from django.db.models import get_model
 from django.http import Http404
-from django.views.generic import CreateView, TemplateView
-from django.views.generic.base import ContextMixin
+from django.template import Context, Template
+from django.views.generic import CreateView, TemplateView, View
+from django.views.generic.base import ContextMixin, TemplateResponseMixin
 from django.views.generic.edit import DeleteView
 
-from livinglots import get_organizer_model
+from braces.views import (CsrfExemptMixin, LoginRequiredMixin,
+                          StaffuserRequiredMixin)
+
+from livinglots import get_organizer_model, get_organizer_model_name
 from livinglots_genericviews import AddGenericMixin
+
+from .mail import get_target_participant_context
 
 
 class EditParticipantMixin(ContextMixin):
@@ -123,3 +131,58 @@ class AddParticipantSuccessView(ParticipantMixin, TemplateView):
                 self._get_participant_type(),
             ),
         ]
+
+
+class NotificationPreview(CsrfExemptMixin, LoginRequiredMixin,
+                          StaffuserRequiredMixin, TemplateResponseMixin, View):
+    template_name = 'livinglots/organize/notifications/preview.html'
+
+    obj_types = {
+        'file': 'files.File',
+        'note': 'notes.Note',
+        'organizer': get_organizer_model_name(),
+        'photo': 'photos.Photo',
+    }
+
+    def get_object(self, slug):
+        """
+        Get the object that the participant is getting a notification about.
+
+        This is the thing that was posted recently and triggered the
+        notification.
+        """
+        # XXX this could go wrong in a few big ways
+        new_obj_name = self.obj_types[slug.split('new_')[-1]]
+        new_obj_model = get_model(*new_obj_name.split('.'))
+        return new_obj_model.objects.order_by('?')[0]
+
+    def get_participant(self, target):
+        """Attempt to get a participant on this target"""
+        return get_organizer_model().objects.filter(
+            content_type_id=ContentType.objects.get_for_model(target).pk,
+            object_id=target.pk,
+        )[0]
+
+    def get_context_data(self, slug):
+        # Are we even in the right place?
+        if not slug.startswith('organize.notifications'):
+            return {}
+
+        # Get an object using slug kwarg
+        obj = self.get_object(slug)
+
+        # Get a theoretical participant, trying to match to the given target
+        participant = self.get_participant(obj.content_object)
+
+        # Get context using the mailing context
+        return get_target_participant_context(participant, obj)
+
+    def render_content(self, content, context):
+        return Template(content).render(Context(context))
+
+    def post(self, request, *args, **kwargs):
+        # NB: Using POST just in case the passed flatblock content is too long
+        content = request.POST.get('content', None)
+        context = self.get_context_data(kwargs.get('slug', None))
+        context['content'] = self.render_content(content, context)
+        return self.render_to_response(context)

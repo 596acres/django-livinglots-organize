@@ -65,17 +65,24 @@ def mail_target_participants(participant_cls, target, subject,
                                from_email=get_target_email_address(target))
 
 
+def get_target_participant_context(participant, obj, **kwargs):
+    """Get context for targetted notification emails."""
+    context = kwargs
+    context.update({
+        'BASE_URL': Site.objects.get_current().domain,
+        'MAILREADER_REPLY_PREFIX': settings.MAILREADER_REPLY_PREFIX,
+        'obj': obj,
+        'participant': participant,
+        'target': participant.content_object,
+    })
+    return context
+
+
 def _get_messages(participants, template_name, fail_silently_no_template=False,
-                  **kwargs):
+                  obj=None, **kwargs):
     messages = {}
     for p in participants:
-        context = kwargs
-        context.update({
-            'BASE_URL': Site.objects.get_current().domain,
-            'MAILREADER_REPLY_PREFIX': settings.MAILREADER_REPLY_PREFIX,
-            'target': p.content_object,
-            'participant': p,
-        })
+        context = get_target_participant_context(p, obj, **kwargs)
         try:
             messages[p.email] = render_to_string(template_name, context)
         except TemplateDoesNotExist:
