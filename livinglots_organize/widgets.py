@@ -13,7 +13,7 @@ class PrefixLabelTextInput(TextInput):
             attributes = dict(attributes.items() + attrs.items())
         rendered_field = super(PrefixLabelTextInput, self).render(name, value, attributes)
         return mark_safe("""
-            <div class="input-prepend">
-                <span class="add-on prefix">%s</span> %s
+            <div class="input-group">
+                <span class="input-group-addon">%s</span> %s
             </div>
         """ % (self.prefix, rendered_field))
