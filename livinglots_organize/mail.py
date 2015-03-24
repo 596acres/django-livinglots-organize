@@ -56,7 +56,7 @@ def mail_target_participants(participant_cls, target, subject,
     participants = participant_cls.objects.filter(
         content_type=ContentType.objects.get_for_model(target),
         object_id=target.pk,
-    )
+    ).exclude(email=None)
     participants = [p for p in participants if p.email not in excluded_emails]
     messages = _get_messages(participants, template,
                              fail_silently_no_template=fail_silently_no_template,
