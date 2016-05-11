@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
-from django.template.base import TemplateDoesNotExist
+from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import render_to_string
 
 from livinglots_mailsender.helpers import (mail_multiple_personalized,
