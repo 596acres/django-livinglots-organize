@@ -3,10 +3,10 @@ Generic views for editing participants.
 
 """
 
+from django.apps import apps
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
-from django.db.models import get_model
 from django.http import Http404
 from django.template import Context, Template
 from django.views.generic import CreateView, TemplateView, View
@@ -153,7 +153,7 @@ class NotificationPreview(CsrfExemptMixin, LoginRequiredMixin,
         """
         # XXX this could go wrong in a few big ways
         new_obj_name = self.obj_types[slug.split('new_')[-1]]
-        new_obj_model = get_model(*new_obj_name.split('.'))
+        new_obj_model = apps.get_model(*new_obj_name.split('.'))
         return new_obj_model.objects.order_by('?')[0]
 
     def get_participant(self, target):
