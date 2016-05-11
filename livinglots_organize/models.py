@@ -3,7 +3,7 @@ import logging
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -27,7 +27,7 @@ class Participant(models.Model):
 
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     class Meta:
         abstract = True
@@ -52,7 +52,7 @@ class BaseOrganizer(Participant):
     # so we can do spatial joins between Organizer and Lot
     objects = models.GeoManager()
 
-    type = models.ForeignKey('OrganizerType')
+    type = models.ForeignKey('livinglots_organize.OrganizerType')
     url = models.URLField(_('url'), null=True, blank=True)
     notes = models.TextField(_('notes'), null=True, blank=True)
     facebook_page = models.CharField(
