@@ -17,7 +17,7 @@ from braces.views import (CsrfExemptMixin, LoginRequiredMixin,
                           StaffuserRequiredMixin)
 
 from livinglots import get_organizer_model, get_organizer_model_name
-from livinglots_genericviews import AddGenericMixin
+from livinglots_genericviews.views import AddGenericMixin
 
 from .mail import get_target_participant_context
 
