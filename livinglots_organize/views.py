@@ -16,7 +16,8 @@ from django.views.generic.edit import DeleteView
 from braces.views import (CsrfExemptMixin, LoginRequiredMixin,
                           StaffuserRequiredMixin)
 
-from livinglots import get_organizer_model, get_organizer_model_name
+from livinglots import (get_organizer_model, get_organizer_model_name,
+                        get_watcher_model)
 from livinglots_genericviews.views import AddGenericMixin
 
 from .mail import get_target_participant_context
@@ -30,6 +31,8 @@ class EditParticipantMixin(ContextMixin):
         context.update({
             'organizers': get_organizer_model().objects.filter(email_hash__istartswith=hash).order_by('added'),
         })
+        if get_watcher_model():
+            context['watchers'] = get_watcher_model().objects.filter(email_hash__istartswith=hash).order_by('added')
         return context
 
     def get_participant_hash(self):
@@ -63,6 +66,12 @@ class DeleteOrganizerView(DeleteParticipantView):
     model = get_organizer_model()
     pk_url_kwarg = 'organizer_pk'
     template_name = 'livinglots/organize/organizer_confirm_delete.html'
+
+
+class DeleteWatcherView(DeleteParticipantView):
+    model = get_watcher_model()
+    pk_url_kwarg = 'watcher_pk'
+    template_name = 'livinglots/organize/watcher_confirm_delete.html'
 
 
 class EditLotParicipantView(EditParticipantMixin, TemplateView):

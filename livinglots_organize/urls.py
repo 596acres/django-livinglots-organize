@@ -3,7 +3,8 @@ from django.conf.urls import url
 from livinglots import get_organizer_model
 
 from .views import (AddParticipantSuccessView, DeleteOrganizerView,
-                    EditLotParicipantView, NotificationPreview)
+                    DeleteWatcherView, EditLotParicipantView,
+                    NotificationPreview)
 
 
 urlpatterns = [
@@ -21,6 +22,10 @@ urlpatterns = [
     url(r'^organizers/(?P<hash>[^/]{30,})/delete/(?P<organizer_pk>\d+)/$',
         DeleteOrganizerView.as_view(),
         name='delete_organizer'),
+
+    url(r'^watchers/(?P<hash>[^/]{30,})/delete/(?P<watcher_pk>\d+)/$',
+        DeleteWatcherView.as_view(),
+        name='delete_watcher'),
 
     url(r'^organize/notifications/(?P<slug>\S+)/preview/$',
         NotificationPreview.as_view(),
