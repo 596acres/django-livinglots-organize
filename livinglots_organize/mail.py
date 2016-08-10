@@ -20,6 +20,7 @@ def mass_mailing(subject, message, objects, template_name, **kwargs):
             'obj': obj,
         })
 
+    # TODO optionally attach html version
     mail_multiple_personalized(subject, messages, **kwargs)
 
 
@@ -51,6 +52,7 @@ def mass_mail_organizers(subject, message, organizers, **kwargs):
 
 def mail_target_participants(participant_cls, target, subject,
                              excluded_emails=[], template=None,
+                             html_template=None,
                              fail_silently_no_template=True, **kwargs):
     """Send a message to participants of a given target."""
     participants = participant_cls.objects.filter(
@@ -61,7 +63,11 @@ def mail_target_participants(participant_cls, target, subject,
     messages = _get_messages(participants, template,
                              fail_silently_no_template=fail_silently_no_template,
                              **kwargs)
-    mail_multiple_personalized(subject, messages,
+    html_messages = None
+    if html_template:
+        html_messages = _get_messages(participants, html_template,
+                                      fail_silently_no_template=True, **kwargs)
+    mail_multiple_personalized(subject, messages, html_messages=html_messages,
                                from_email=get_target_email_address(target))
 
 

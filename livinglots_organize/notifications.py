@@ -27,12 +27,17 @@ def notify_participant_type_new_obj(participant_class, obj):
         participant_class.__name__.lower(),
         obj._meta.object_name.lower()
     )
+    html_template = 'livinglots/organize/notifications/%ss/new_%s.html' % (
+        participant_class.__name__.lower(),
+        obj._meta.object_name.lower()
+    )
     subject = '%s %s updated!' % (
         participant_class.participation_adjective().title(),
         target._meta.object_name.lower(),
     )
     mail_target_participants(participant_class, target, subject,
-                             template=template, **kwargs)
+                             template=template, html_template=html_template,
+                             **kwargs)
 
 
 def notify_participants_new_obj(obj):
