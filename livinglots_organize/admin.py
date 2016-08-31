@@ -18,7 +18,7 @@ class BaseOrganizerAdmin(admin.ModelAdmin):
         return mark_safe(
             '<a href="%s">%s</a>' % (
                 organizer.content_object.get_absolute_url(),
-                str(organizer.content_object),
+                organizer.content_object,
             )
         )
 
