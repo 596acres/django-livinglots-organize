@@ -27,7 +27,7 @@ class RenderOrganizerList(RenderGenericRelationList):
 
     def get_context(self, context, target, public=False):
         context.update({
-            self.get_model_plural_name(): self.get_objects(target, public=public),
+            self.get_model_plural_name(): self.get_objects(target, **public),
         })
         return context
 
